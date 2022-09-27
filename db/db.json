@@ -81,10 +81,5 @@
       "description": "The pro-grade camera of the Samsung Galaxy S22 Ultra 1TB is designed to click the most amazing pictures at night. It is a powerful premium-level device that supports smooth multitasking and a pro-level gaming experience over a crystal clear display. You will also get to experience a massive battery backed by a vast amount of storage."
     }
   ],
-  "cart": [
-    {
-      "id": 3,
-      "quantity": 10
-    }
-  ]
+  "cart": []
 }

@@ -1,35 +1,37 @@
-import React from "react";
-import { Box, Grid, Typography,Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Box, Grid, Typography, Button } from "@mui/material";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import axios from 'axios';
+import axios from "axios";
 
 // import StarRateIcon from '@mui/icons-material/StarRate';
 function App() {
-  const product = {
-    id: 3,
-    name: "Redmi 10 prime",
-    imageUrl:
-      "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1026&q=80",
-    price: 11000,
-    rating: 4.2,
-    description:
-      "Xiaomi 12 Pro 5G feature a screen of up to 6.73 inches, its screen uses WQHD+ AMOLED panels with resolution (1440 x 3200Pixels) to provide vivid visibility, sharp details that are suitable for reading newspapers, entertainment or gaming. It is equipped with Octa-core Qualcomm SM8450 Snapdragon 8 Gen 1 (4 nm) processor that lets you enjoy a faster and lag-free performance. Xiaomi 12 Pro 5G comes with various memory variations, up to 256GB and 12GB RAM (Please check specification table).",
-  };
+  const [prod, setprod] = useState({});
+
+  useEffect(() => {
+    let id = window.location.pathname.split("/")[2];
+
+    axios
+      .get(`http://localhost:8080/products/${id}`)
+      .then((res) => setprod({ ...res.data }))
+      .catch((err) => console.log(err));
+  }, []);
+
 
   let cart = {};
   const starImgUrl =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZdmJ9_hr5UUsGC5__u0btapjLcoYROBYCvWVTwqu8LiMX1K-pg6Z8Wg4m8ryEs9s9Z3k&usqp=CAU";
 
   const addToCart = async () => {
-    const id=product.id;
-    cart = await axios.get(`http://localhost:8080/cart/${product.id}`);
+    const id = prod.id;
+    cart = await axios.get(`http://localhost:8080/cart/${prod.id}`);
     console.log(cart);
-    const updatedQuantity=cart.data.quantity+1;
+    const updatedQuantity = cart.data.quantity + 1;
 
-    await axios.put(`http://localhost:8080/cart/${product.id}`, {
-      id:id,
-      quantity: updatedQuantity,
-    })
+    await axios
+      .put(`http://localhost:8080/cart/${prod.id}`, {
+        id: id,
+        quantity: updatedQuantity,
+      })
       .then((resp) => {
         console.log(resp.data);
       })
@@ -37,6 +39,8 @@ function App() {
         console.log(error);
       });
   };
+
+  console.log("Path : ", window.location.pathname);
   return (
     <div>
       <Grid
@@ -56,7 +60,6 @@ function App() {
             <Grid
               sx={{
                 borderRadious: 15,
-                
               }}
             >
               <Box
@@ -65,7 +68,7 @@ function App() {
                 }}
               >
                 <img
-                  src={product.imageUrl}
+                  src={prod.imageUrl}
                   height="750px"
                   width="600px"
                   style={{ borderRadius: 12 }}
@@ -85,12 +88,13 @@ function App() {
           }}
         >
           <Typography variant="h4" sx={{ pt: 3, pb: 5, color: "#00001a" }}>
-            {product.name}
+            {prod.name}
           </Typography>
           <Grid item sx={{ pb: 3, display: "flex", color: "#00004d" }}>
             <Typography variant="h6" sx={{ pt: -6 }}>
-              Rating: {product.rating}{" "}
+              Rating: {prod.rating}{" "}
             </Typography>
+
             <Box
               sx={{
                 borderRadious: "8px",
@@ -100,18 +104,22 @@ function App() {
               <img src={starImgUrl} height="20" />
             </Box>
           </Grid>
-          <Grid sx={{ pb: 3 }}>
+          <Typography variant="h5" sx={{ pt: -6 }}>
+            Price: ${prod.price}{" "}
+          </Typography>
+          <Grid sx={{ pb: 3 }} py={2}>
             <Button
               variant="outlined"
               onClick={addToCart}
-                sx={{
-                  width: "222px",
-                  color: "green",
-                  "&:hover": {
-                    backgroundColor: "green",
-                    color:'white'
-                  },
-                }}
+             
+              sx={{
+                width: "222px",
+                color: "green",
+                "&:hover": {
+                  backgroundColor: "green",
+                  color: "white",
+                },
+              }}
             >
               ADD TO CART
             </Button>
@@ -162,7 +170,7 @@ function App() {
             variant="subtitle1"
             sx={{ pb: 4, pl: 1, color: "#595959" }}
           >
-            {product.description}
+            {prod.description}
           </Typography>
         </Grid>
       </Grid>
@@ -171,4 +179,3 @@ function App() {
 }
 
 export default App;
-
