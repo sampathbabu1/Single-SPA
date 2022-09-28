@@ -16,27 +16,50 @@ function App() {
       .catch((err) => console.log(err));
   }, []);
 
-
   let cart = {};
   const starImgUrl =
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZdmJ9_hr5UUsGC5__u0btapjLcoYROBYCvWVTwqu8LiMX1K-pg6Z8Wg4m8ryEs9s9Z3k&usqp=CAU";
 
   const addToCart = async () => {
     const id = prod.id;
-    cart = await axios.get(`http://localhost:8080/cart/${prod.id}`);
-    console.log(cart);
-    const updatedQuantity = cart.data.quantity + 1;
+    axios
+      .get(`http://localhost:8080/cart/${prod.id}`)
+      .then(async (res) => {
+        const updatedQuantity = res.data.quantity + 1;
+        await axios
+          .put(`http://localhost:8080/cart/${prod.id}`, {
+            id: id,
+            quantity: updatedQuantity,
+          })
+          .then((resp) => {
+            console.log(resp.data);
 
-    await axios
-      .put(`http://localhost:8080/cart/${prod.id}`, {
-        id: id,
-        quantity: updatedQuantity,
+            const data = JSON.parse(localStorage.getItem("cart"));
+            data[resp.data.id] = updatedQuantity;
+            localStorage.setItem("cart", JSON.stringify(data));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
-      .then((resp) => {
-        console.log(resp.data);
-      })
-      .catch((error) => {
-        console.log(error);
+      .catch(async (err) => {
+        await axios
+          .post(`http://localhost:8080/cart`, {
+            id: id,
+            quantity: 1,
+          })
+          .then((resp) => {
+            let data = JSON.parse(localStorage.getItem("cart"));
+            console.log("Data : ", data);
+            if (data == null) {
+              data = {};
+              data[resp.data.id] = 1;
+              localStorage.setItem("cart", JSON.stringify(data));
+            } else {
+              data[resp.data.id] = 1;
+              localStorage.setItem("cart", JSON.stringify(data));
+            }
+          });
       });
   };
 
@@ -111,7 +134,6 @@ function App() {
             <Button
               variant="outlined"
               onClick={addToCart}
-             
               sx={{
                 width: "222px",
                 color: "green",

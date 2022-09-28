@@ -6,6 +6,7 @@ import Badge from "@mui/material/Badge";
 
 import { pink } from "@mui/material/colors";
 import { Observable } from "windowed-observable";
+
 import { navigateToUrl } from "single-spa";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -50,7 +51,16 @@ const Container = () => {
           }}
         >
           <Badge badgeContent={4} color="primary">
-            <ShoppingCartIcon sx={{ color: "white" }} />
+            <a
+              href={`/cart`}
+              onClick={navigateToUrl}
+              style={{
+                textDecoration: "none",
+                // color: "black",
+              }}
+            >
+              <ShoppingCartIcon sx={{ color: "white" }} />
+            </a>
           </Badge>
           <Avatar sx={{ bgcolor: pink[500], marginLeft: "30px" }}>A</Avatar>
         </Box>

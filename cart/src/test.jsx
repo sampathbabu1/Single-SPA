@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Grid, Box, Typography, Rating, Button, IconButton } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  Rating,
+  Button,
+  IconButton,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const cart = () => {
@@ -50,99 +57,136 @@ const cart = () => {
     console.log(cartItems);
     console.log(temp);
     localStorage.setItem("cart", JSON.stringify(temp));
-    location.reload()
+    location.reload();
   };
   return (
     <>
-      <Grid container>
-        {products.map((value) => (
-          <>
-            <Grid item xs={10} marginY={3}>
-              <Grid container direction={"row"}>
-                <Grid item marginX={2} border="1px solid black">
-                  <Box
-                    component="img"
-                    maxWidth="200px"
-                    src={value.imageUrl}
-                  />
-                </Grid>
-                <Grid item margin={1}>
-                  <Grid container direction="column">
-                    <Typography>{value.name}</Typography>
-                    <Typography marginY={2} fontWeight="bold" fontSize={"18px"}>
-                      ₹ {value.price}
-                    </Typography>
-                    <Rating
-                      name="read-only"
-                      value={value.rating}
-                      readOnly
-                      precision={0.5}
-                      sx={{ fontSize: "1rem" }}
-                    />
-                    <Typography>
-                      QTY:
-                      <Button
-                        onClick={() => {
-                          
-                          let temp = qty[value.id];
-                          temp -= 1;
-                          setQty((prev) => ({ ...prev, [value.id]: (temp>0)?temp:0 }));
-                          const it = JSON.parse(localStorage.getItem("cart"));
-                          it[value.id] -= 1;
-                          localStorage.setItem("cart", JSON.stringify(it));
-                          handle();
-                        }}
-                      >
-                        {" - "}
-                      </Button>
-                      {qty[value.id]}
-                      <Button
-                        onClick={() => {
-                            let temp = qty[value.id];
-                            temp += 1;
-                            setQty((prev) => ({ ...prev, [value.id]: temp }));
-                          const it = JSON.parse(localStorage.getItem("cart"));
-                          it[value.id] += 1;
-                          localStorage.setItem("cart", JSON.stringify(it));
-                          handle();
-                          setQty((prev) => ({
-                            [value.id]: qty[value.id] + 1,
-                            ...prev,
-                          }));
-                        }}
-                      >
-                        {" + "}
-                      </Button>
-                    </Typography>
+      {products.length > 0 ? (
+        <>
+          <Grid container>
+            {products.map((value) => (
+              <>
+                <Grid item xs={10} marginY={3}>
+                  <Grid container direction={"row"}>
+                    <Grid item marginX={2} border="1px solid black">
+                      <Box
+                        component="img"
+                        maxWidth="200px"
+                        src={value.imageUrl}
+                      />
+                    </Grid>
+                    <Grid item margin={1}>
+                      <Grid container direction="column">
+                        <Typography>{value.name}</Typography>
+                        <Typography
+                          marginY={2}
+                          fontWeight="bold"
+                          fontSize={"18px"}
+                        >
+                          ₹ {value.price}
+                        </Typography>
+                        <Rating
+                          name="read-only"
+                          value={value.rating}
+                          readOnly
+                          precision={0.5}
+                          sx={{ fontSize: "1rem" }}
+                        />
+                        <Typography>
+                          QTY:
+                          <Button
+                            onClick={() => {
+                              axios.put(
+                                `http://localhost:8080/cart/${value.id}`,
+                                {
+                                  id: qty[value.id],
+                                  quantity: qty[value.id] - 1,
+                                }
+                              );
+
+                              let temp = qty[value.id];
+                              temp -= 1;
+                              setQty((prev) => ({
+                                ...prev,
+                                [value.id]: temp > 0 ? temp : 0,
+                              }));
+                              const it = JSON.parse(
+                                localStorage.getItem("cart")
+                              );
+                              it[value.id] -= 1;
+                              localStorage.setItem("cart", JSON.stringify(it));
+                              handle();
+                            }}
+                          >
+                            {" - "}
+                          </Button>
+                          {qty[value.id]}
+                          <Button
+                            onClick={() => {
+                              axios.put(
+                                `http://localhost:8080/cart/${value.id}`,
+                                {
+                                  id: qty[value.id],
+                                  quantity: qty[value.id] + 1,
+                                }
+                              );
+
+                              let temp = qty[value.id];
+                              temp += 1;
+                              setQty((prev) => ({ ...prev, [value.id]: temp }));
+                              const it = JSON.parse(
+                                localStorage.getItem("cart")
+                              );
+                              it[value.id] += 1;
+                              localStorage.setItem("cart", JSON.stringify(it));
+                              handle();
+                              setQty((prev) => ({
+                                [value.id]: qty[value.id] + 1,
+                                ...prev,
+                              }));
+                            }}
+                          >
+                            {" + "}
+                          </Button>
+                        </Typography>
+                      </Grid>
+                    </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={1} marginTop={4}>
-                <IconButton onClick={()=>{
-                    removeItem(value.id)
-                }}>
-              <DeleteIcon htmlColor="tomato" />
-              </IconButton>
-            </Grid>
-          </>
-        ))}
-      </Grid>
-      <Grid
-        marginX={5}
-        marginY={8}
-        item
-        xs
-        display="flex"
-        justifyContent="space-between"
-      >
-        <Typography color="white" fontWeight="bold" fontSize="20px">
-          Total Price:{" "}
+                <Grid item xs={1} marginTop={4}>
+                  <IconButton
+                    onClick={() => {
+                      axios.delete(`http://localhost:8080/cart/${value.id}`);
+                      removeItem(value.id);
+                    }}
+                  >
+                    <DeleteIcon htmlColor="tomato" />
+                  </IconButton>
+                </Grid>
+              </>
+            ))}
+          </Grid>
+          <Grid
+            marginX={5}
+            marginY={8}
+            item
+            xs
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Typography color="white" fontWeight="bold" fontSize="20px">
+              Total Price:{" "}
+            </Typography>
+            <Typography fontWeight="bold" fontSize="20px" marginRight="10rem">
+              Total Price : ₹ {sum}
+            </Typography>
+          </Grid>
+        </>
+      ) : (
+        <Typography variant="h4" sx={{ mx: "30%", my: "10%" }}>
+          Sorry, your cart is empty !!
         </Typography>
-        <Typography fontWeight="bold" fontSize="20px" marginRight="10rem">
-          Total Price : ₹ {sum}
-        </Typography>
-      </Grid>
+      )}
     </>
   );
 };
