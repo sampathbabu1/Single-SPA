@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Box, Grid, Typography, Button } from "@mui/material";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import axios from "axios";
-
+import { Observable } from "windowed-observable";
 // import StarRateIcon from '@mui/icons-material/StarRate';
 function App() {
   const [prod, setprod] = useState({});
-
+  const observable = new Observable("cart");
   useEffect(() => {
     let id = window.location.pathname.split("/")[2];
 
@@ -36,6 +36,7 @@ function App() {
 
             const data = JSON.parse(localStorage.getItem("cart"));
             data[resp.data.id] = updatedQuantity;
+            observable.publish(Object.keys(data).length)
             localStorage.setItem("cart", JSON.stringify(data));
           })
           .catch((error) => {
@@ -59,6 +60,7 @@ function App() {
               data[resp.data.id] = 1;
               localStorage.setItem("cart", JSON.stringify(data));
             }
+            observable.publish(Object.keys(data).length)
           });
       });
   };

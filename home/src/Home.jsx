@@ -14,13 +14,13 @@ import {
 
 const Home = () => {
   const observable = new Observable("cart");
-  observable.subscribe((value) => console.log("Value : ", value));
+  observable.subscribe((value) => console.log("Value : ", value),{latest:true});
   const [data, setdata] = useState([]);
   const [index, setIndex] = useState(0);
 
   var items = [
     "https://i.ytimg.com/vi/FT3ODSg1GFE/maxresdefault.jpg",
-    "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1026&q=80",
+    "https://www.displaydaily.com/images/2018/June/Hero-Banner.jpg",
     "https://img.global.news.samsung.com/in/wp-content/uploads/2022/02/S22_KV_Banner_728x410.jpg",
   ];
 
@@ -46,7 +46,7 @@ const Home = () => {
         <img src={items[index]} height="100%" width="100%"></img>
       </Box>
       <Box sx={{ marginTop: "20px" }}>
-        <Typography variant="h4">New Arraivals..</Typography>
+        <Typography variant="h4">New Arrivals..</Typography>
       </Box>
 
       <Grid container>
