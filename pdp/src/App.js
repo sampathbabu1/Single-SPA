@@ -9,6 +9,7 @@ function App() {
   const observable = new Observable("cart");
   useEffect(() => {
     let id = window.location.pathname.split("/")[2];
+    if(id==undefined) id=1;
 
     axios
       .get(`http://localhost:8080/products/${id}`)
