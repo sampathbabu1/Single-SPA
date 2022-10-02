@@ -8,7 +8,7 @@ import { Observable } from "windowed-observable";
 import { navigateToUrl } from "single-spa";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 const Container = () => {
-  const [notification,setNotification]=useState(Object.keys(JSON.parse(localStorage.getItem("cart"))).length)
+  const [notification,setNotification]=useState((localStorage.getItem("cart")==null)?0:Object.keys(JSON.parse(localStorage.getItem("cart"))).length)
   const observable = new Observable("cart");
   observable.subscribe((value)=>setNotification(value),{latest:true})
 
@@ -22,6 +22,7 @@ const Container = () => {
         margin: 0,
         height: "60px",
         display: "flex",
+        minWidth:"100%",
         flexDirection: "row",
         alignItems: "center",
         paddingX: "5%",

@@ -41,12 +41,12 @@ const Home = () => {
   }, []);
 
   return (
-    <Box sx={{ margin: "20px" }}>
+    <Box sx={{ margin: "20px",marginTop:10 }}>
       <Box sx={{ height: "500px" }}>
         <img src={items[index]} height="100%" width="100%"></img>
       </Box>
       <Box sx={{ marginTop: "20px" }}>
-        <Typography variant="h4">New Arrivals..</Typography>
+        <Typography variant="h4">New Arrivals</Typography>
       </Box>
 
       <Grid container>
@@ -113,7 +113,7 @@ const Home = () => {
                             style={{ fontWeight: "bold", fontSize: "20px" }}
                           >
                             {" "}
-                            ${d.price}
+                            ₹{d.price}
                           </span>
                         </Typography>
                       </Box>

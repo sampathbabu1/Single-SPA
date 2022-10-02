@@ -9,6 +9,7 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { navigateToUrl } from "single-spa";
 
 const cart = () => {
   const [products, setProducts] = useState([]);
@@ -60,7 +61,7 @@ const cart = () => {
     location.reload();
   };
   return (
-    <>
+    <Grid marginTop={6}>
       {products.length > 0 ? (
         <>
           <Grid container>
@@ -77,7 +78,15 @@ const cart = () => {
                     </Grid>
                     <Grid item margin={1}>
                       <Grid container direction="column">
-                        <Typography>{value.name}</Typography>
+                      <a
+                            href={`/pdp/${value.id}`}
+                            onClick={navigateToUrl}
+                            style={{
+                              textDecoration: "none",
+                              color: "black",
+                            }}
+                          ><Typography>{value.name}</Typography>
+                          </a>
                         <Typography
                           marginY={2}
                           fontWeight="bold"
@@ -187,7 +196,7 @@ const cart = () => {
           Sorry, your cart is empty !!
         </Typography>
       )}
-    </>
+    </Grid>
   );
 };
 

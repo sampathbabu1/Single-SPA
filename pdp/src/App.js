@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Grid, Typography, Button } from "@mui/material";
+import { Box, Grid, Typography, Button,Rating } from "@mui/material";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import axios from "axios";
 import { Observable } from "windowed-observable";
@@ -71,6 +71,7 @@ function App() {
       <Grid
         container
         alignItems="left"
+        marginTop={6}
         sx={{
           alignItems: "left",
           justifyContent: "left",
@@ -115,22 +116,22 @@ function App() {
           <Typography variant="h4" sx={{ pt: 3, pb: 5, color: "#00001a" }}>
             {prod.name}
           </Typography>
-          <Grid item sx={{ pb: 3, display: "flex", color: "#00004d" }}>
-            <Typography variant="h6" sx={{ pt: -6 }}>
-              Rating: {prod.rating}{" "}
+          <Grid item sx={{ pb: 3, display: "flex", color: "#00004d",alignItems:'center' }}>
+            <Typography variant="h6" sx={{ pt: -6,pr:1 }}>
+              Rating: 
             </Typography>
-
-            <Box
+            <Rating name="read-only" readOnly value={prod.rating ?? 0} precision={0.5} />
+            {/* <Box
               sx={{
                 borderRadious: "8px",
                 pt: "4px",
               }}
             >
               <img src={starImgUrl} height="20" />
-            </Box>
+            </Box> */}
           </Grid>
           <Typography variant="h5" sx={{ pt: -6 }}>
-            Price: ${prod.price}{" "}
+            Price: ₹{prod.price}{" "}
           </Typography>
           <Grid sx={{ pb: 3 }} py={2}>
             <Button
