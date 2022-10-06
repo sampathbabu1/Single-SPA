@@ -1,6 +1,8 @@
 import * as React from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
+import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from "dayjs";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -23,34 +25,37 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({
+export default function EditModal({
   isModelOpen,
   setisModelOpen,
-  setisAddOpen,
   date,
-  eventid,
   events,
   setevents,
+  currentEvent,
 }) {
   const handleOpen = () => setisModelOpen(true);
-  const handleClose = () => {setisModelOpen(false)
-  setisAddOpen(false)};
-  var today = new Date();
-  var currenttime =
-    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  const handleClose = () => {
+    setisModelOpen(false);
+  };
+  //   var today = new Date();
+  //   var currenttime =
+  //     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
-  const timevar = date + "T" + currenttime;
-  const timevar2 = "2014-08-18T21:11:54";
+  //   const timevar = date + "T" + currenttime;
+  //   const timevar2 = "2014-08-18T21:11:54";
 
-  var nowDateTime = today.toISOString();
-  var nowDate = nowDateTime.split("T")[0];
+  //   var nowDateTime = today.toISOString();
+  //   var nowDate = nowDateTime.split("T")[0];
 
-  var target = new Date("2022-10-03" + "T" + currenttime);
-
-  const [startTime, setstartTime] = React.useState(dayjs(target));
-  const [endTime, setendTime] = React.useState(dayjs(target));
-
-  const [eventName, seteventName] = React.useState();
+  //   var target = new Date("2022-10-03" + "T" + currenttime);
+  const [eventName, seteventName] = React.useState(currentEvent.title);
+  const [startTime, setstartTime] = React.useState(dayjs(currentEvent.start));
+  const [endTime, setendTime] = React.useState(dayjs(currentEvent.end));
+  useEffect(() => {
+    seteventName(currentEvent.title);
+    setstartTime(currentEvent.start);
+    setendTime(currentEvent.end);
+  }, [currentEvent]);
 
   const handleStartChange = (newValue) => {
     console.log("Start time : ", newValue);
@@ -60,30 +65,50 @@ export default function BasicModal({
     console.log(newValue);
     setendTime(newValue);
   };
-  const addEvent = () => {
-    const eveid = eventid + 1;
-    console.log(eventid);
-    var sttime = startTime.format("HH:mm:ss");
-    var edtime = endTime.format("HH:mm:ss");
-    console.log("Start time : ", sttime);
-    console.log("End time : ", edtime);
+  const editEvent = () => {
+    const eveid = currentEvent.id;
+    // console.log(eventid);
+    console.log(typeof startTime);
+    if (typeof startTime !== "string") {
+      var sttime = startTime.format("HH:mm:ss");
+    } else var sttime = currentEvent.start.split("T")[1];
 
-    const newevent = {
-      id: Date.now(),
+    if (typeof endTime !== "string") {
+      var edtime = endTime.format("HH:mm:ss");
+    } else var edtime = currentEvent.end.split("T")[1];
+    var curdate = currentEvent.start.split("T")[0];
+    // console.log("Start time : ", sttime);
+    // console.log("End time : ", edtime);
+    console.log(currentEvent.start);
+
+    const updatedevent = {
+      id: eveid,
       title: eventName,
-      start: `${date}T${sttime}`,
-      end: `${date}T${edtime}`,
+      start: `${curdate}T${sttime}`,
+      end: `${curdate}T${edtime}`,
     };
 
-    console.log("Event  : ", newevent);
-
-    axios.post(`http://localhost:8080/events`, newevent);
-    setevents([...events, newevent]);
-    setstartTime(target);
-    setendTime(target);
-    seteventName();
+    axios.put(`http://localhost:8080/events/${eveid}`, updatedevent);
+    var updatedEvents = events.map((event_i) => {
+      if (event_i.id != eveid) return event_i;
+      else return updatedevent;
+    });
+    setevents(updatedEvents);
+    // setstartTime(target);
+    // setendTime(target);
+    // seteventName();
     handleClose();
   };
+
+  const deleteEvent=()=>{
+    const eveid = currentEvent.id;
+    axios.delete(`http://localhost:8080/events/${eveid}`);
+    var updatedEvents = events.map((event_i) => {
+      if (event_i.id != eveid) return event_i;
+    });
+    setevents(updatedEvents);
+    handleClose();
+  }
   return (
     <div>
       <Modal
@@ -92,9 +117,10 @@ export default function BasicModal({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+        {/* {iseditEvent == false ? ( */}
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Add an event
+            Edit event
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <Typography>
@@ -136,9 +162,9 @@ export default function BasicModal({
           <Typography sx={{ mt: 4 }}>
             <Button
               variant="outlined"
-              onClick={addEvent}
+              onClick={editEvent}
               sx={{
-                width: "222px",
+                width: "180px",
                 color: "#f20a7e",
                 "&:hover": {
                   backgroundColor: "#f20a7e",
@@ -146,10 +172,29 @@ export default function BasicModal({
                 },
               }}
             >
-              Add event
+              Edit event
+            </Button>
+            <Button variant="outlined" 
+            variant="outlined"
+            onClick={deleteEvent}
+            sx={{
+                ml:"14px",
+              width: "180px",
+              color: "#f20a7e",
+              "&:hover": {
+                backgroundColor: "#f20a7e",
+                color: "white",
+              },
+            }}
+            startIcon={<DeleteIcon />}>
+              Delete
             </Button>
           </Typography>
         </Box>
+        {/* ) 
+        : (
+          <Box sx={style}>hlo</Box>
+        )} */}
       </Modal>
     </div>
   );
