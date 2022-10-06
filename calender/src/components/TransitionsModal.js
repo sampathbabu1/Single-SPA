@@ -23,17 +23,22 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({ isModelOpen, setisModelOpen, date,eventid,events,setevents }) {
+export default function BasicModal({
+  isModelOpen,
+  setisModelOpen,
+  date,
+  eventid,
+  events,
+  setevents,
+}) {
   const handleOpen = () => setisModelOpen(true);
   const handleClose = () => setisModelOpen(false);
   var today = new Date();
   var currenttime =
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
-
   const timevar = date + "T" + currenttime;
   const timevar2 = "2014-08-18T21:11:54";
- 
 
   var nowDateTime = today.toISOString();
   var nowDate = nowDateTime.split("T")[0];
@@ -46,7 +51,7 @@ export default function BasicModal({ isModelOpen, setisModelOpen, date,eventid,e
   const [eventName, seteventName] = React.useState();
 
   const handleStartChange = (newValue) => {
-    console.log(newValue);
+    console.log("Start time : ", newValue);
     setstartTime(newValue);
   };
   const handleEndChange = (newValue) => {
@@ -56,20 +61,26 @@ export default function BasicModal({ isModelOpen, setisModelOpen, date,eventid,e
   const addEvent = () => {
     const eveid = eventid + 1;
     console.log(eventid);
-    var sttime =startTime.format("HH:mm:ss");
-    var edtime =endTime.format("HH:mm:ss");
-    const newevent={
+    var sttime = startTime.format("HH:mm:ss");
+    var edtime = endTime.format("HH:mm:ss");
+    console.log("Start time : ", sttime);
+    console.log("End time : ", edtime);
+
+    const newevent = {
       id: Date.now(),
       title: eventName,
       start: `${date}T${sttime}`,
       end: `${date}T${edtime}`,
-    }
-    axios.post(`http://localhost:8080/events`,newevent);
-    setevents([...events],newevent);
+    };
+
+    console.log("Event  : ", newevent);
+
+    axios.post(`http://localhost:8080/events`, newevent);
+    setevents([...events, newevent]);
     setstartTime(target);
     setendTime(target);
     seteventName();
-    handleClose()
+    handleClose();
   };
   return (
     <div>

@@ -1,5 +1,6 @@
-import {React,useState,useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import axios from "axios";
+import { Box } from "@mui/material";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -21,46 +22,53 @@ import TransitionsModal from "./components/TransitionsModal";
 // ];
 
 const Calender = () => {
-const [events, setevents] = useState([])
+  const [events, setevents] = useState([]);
   useEffect(() => {
     axios
       .get("http://localhost:8080/events")
-      .then((res) => {setevents(res.data)
-    
-  })
+      .then((res) => {
+        setevents(res.data);
+      })
       .catch((err) => console.log(err));
-  }, [events]);
+  }, []);
 
   const [isModelOpen, setisModelOpen] = useState(false);
   const [date, setdate] = useState("date");
 
-  const dateClick=(e)=>{
-     console.log(e.dateStr);
-     setdate(e.dateStr);
+  const dateClick = (e) => {
+    console.log("Date is  , ", e.dateStr.split("T")[0]);
+    setdate(e.dateStr.split("T")[0]);
     setisModelOpen(true);
-  }
+  };
   return (
     <div className="App">
-      <TransitionsModal isModelOpen={isModelOpen} setisModelOpen={setisModelOpen} date={date} events={events} setevents={setevents}/>
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        headerToolbar={{
-          center: "dayGridMonth,timeGridWeek,timeGridDay new",
-        }}
-        customButtons='none'
-        customButtons={{
-          new: {
-            text: "-",
-            click: () => console.log("new event"),
-          },
-        }}
+      <TransitionsModal
+        isModelOpen={isModelOpen}
+        setisModelOpen={setisModelOpen}
+        date={date}
         events={events}
-        eventColor="#f20a7e"
-        nowIndicator
-        dateClick={dateClick}
-        eventClick={(e) => console.log(e.event.id)}
+        setevents={setevents}
       />
+      <Box sx={{ marginTop: "70px" }}>
+        <FullCalendar
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          headerToolbar={{
+            center: "dayGridMonth,timeGridWeek,timeGridDay new",
+          }}
+          customButtons={{
+            new: {
+              text: "-",
+              click: () => console.log("new event"),
+            },
+          }}
+          events={events}
+          eventColor="#f20a7e"
+          nowIndicator
+          dateClick={dateClick}
+          eventClick={(e) => console.log(e.event.id)}
+        />
+      </Box>
     </div>
   );
 };
