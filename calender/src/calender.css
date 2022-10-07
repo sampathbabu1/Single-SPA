@@ -1,0 +1,10 @@
+.fc-event {
+  background-color: #f20a7e; /* default BACKGROUND color */
+  color: #fff; /* default TEXT color */
+  font-size: 1.2em; /* EDIT HERE */
+  cursor: pointer;
+}
+
+.fc-event:hover {
+  background-color: #f20a7e; /* default BACKGROUND color */
+}

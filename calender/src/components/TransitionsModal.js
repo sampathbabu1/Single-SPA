@@ -109,8 +109,8 @@ export default function BasicModal({
             </Box>
           </Box>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <Typography>
-              Event{" "}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ mr: 1 }}>Event name :{"      "}</Typography>
               <OutlinedInput
                 onChange={(event) => {
                   seteventName(event.target.value);
@@ -120,29 +120,28 @@ export default function BasicModal({
                 label="Event"
                 value={eventName}
               />
-            </Typography>
+            </Box>
 
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Typography sx={{ mt: 4 }}>
-                Start Time
+              <Box sx={{ display: "flex", alignItems: "center", mt: 4 }}>
+                <Typography sx={{ mr: 2 }}>Start Time :</Typography>
                 <TimePicker
                   label="Time"
                   value={startTime}
                   onChange={handleStartChange}
                   renderInput={(params) => <TextField {...params} />}
                 />
-                <br></br>
-              </Typography>
-              <Typography sx={{ mt: 4 }}>
-                End Time
+              </Box>
+
+              <Box sx={{ display: "flex", alignItems: "center", mt: 4 }}>
+                <Typography sx={{ mr: 2 }}>End Time :</Typography>
                 <TimePicker
                   label="Time"
                   value={endTime}
                   onChange={handleEndChange}
                   renderInput={(params) => <TextField {...params} />}
                 />
-              </Typography>
-              <br></br>
+              </Box>
             </LocalizationProvider>
           </Typography>
           <Typography sx={{ mt: 4 }}>

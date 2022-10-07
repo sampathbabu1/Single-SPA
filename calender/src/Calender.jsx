@@ -7,6 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import TransitionsModal from "./components/TransitionsModal";
 import EditModal from "./components/EditModel";
+import "./calender.css";
 // const events1 = [
 //   {
 //     id: 1,
