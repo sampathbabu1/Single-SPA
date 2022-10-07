@@ -6,6 +6,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import TransitionsModal from "./components/TransitionsModal";
+import EditModal from "./components/EditModel";
 // const events1 = [
 //   {
 //     id: 1,
@@ -23,6 +24,10 @@ import TransitionsModal from "./components/TransitionsModal";
 
 const Calender = () => {
   const [events, setevents] = useState([]);
+  const [iseditEvent, setiseditEvent] = useState(false);
+  const [currentEvent, setcurrentEvent] = useState({});
+  const [isEventModal, setisEventModal] = useState(false);
+  const [eventId, seteventId] = useState();
   useEffect(() => {
     axios
       .get("http://localhost:8080/events")
@@ -40,14 +45,47 @@ const Calender = () => {
     setdate(e.dateStr.split("T")[0]);
     setisModelOpen(true);
   };
+
+  const eventClick = (e) => {
+    console.log("event is  , ", e.event.id);
+    setisEventModal(true);
+    seteventId(e.event.id);
+    setiseditEvent(true);
+
+    axios
+      .get(`http://localhost:8080/events/${e.event.id}`)
+      .then((res) => {
+        setcurrentEvent({ ...res.data });
+        console.log("Current event is : ", res.data);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <div className="App">
-      <TransitionsModal
-        isModelOpen={isModelOpen}
-        setisModelOpen={setisModelOpen}
-        date={date}
+      {!iseditEvent && (
+        <TransitionsModal
+          isModelOpen={isModelOpen}
+          setisModelOpen={setisModelOpen}
+          date={date}
+          events={events}
+          setevents={setevents}
+          iseditEvent={iseditEvent}
+          setiseditEvent={setiseditEvent}
+          eventId={eventId}
+        />
+      )}
+      <EditModal
+        isEventModal={isEventModal}
+        setisEventModal={setisEventModal}
+        setisAddOpen={setisModelOpen}
         events={events}
+        seteventId={seteventId}
+        iseditEvent={iseditEvent}
+        setiseditEvent={setiseditEvent}
         setevents={setevents}
+        date={date}
+        currentEvent={currentEvent}
       />
       <Box sx={{ marginTop: "70px" }}>
         <FullCalendar
@@ -66,7 +104,7 @@ const Calender = () => {
           eventColor="#f20a7e"
           nowIndicator
           dateClick={dateClick}
-          eventClick={(e) => console.log(e.event.id)}
+          eventClick={eventClick}
         />
       </Box>
     </div>
