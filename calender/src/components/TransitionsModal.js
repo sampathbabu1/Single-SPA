@@ -10,6 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import CloseIcon from "@mui/icons-material/Close";
 
 const style = {
   position: "absolute",
@@ -33,8 +34,10 @@ export default function BasicModal({
   setevents,
 }) {
   const handleOpen = () => setisModelOpen(true);
-  const handleClose = () => {setisModelOpen(false)
-  setisAddOpen(false)};
+  const handleClose = () => {
+    setisModelOpen(false);
+    // setisAddOpen(false);
+  };
   var today = new Date();
   var currenttime =
     today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
@@ -93,9 +96,18 @@ export default function BasicModal({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Add an event
-          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Add an event
+            </Typography>
+
+            <Box
+              sx={{ marginLeft: "auto", cursor: "pointer" }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </Box>
+          </Box>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <Typography>
               Event{" "}

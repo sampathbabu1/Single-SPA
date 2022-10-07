@@ -2,7 +2,7 @@ import * as React from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import Box from "@mui/material/Box";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import dayjs from "dayjs";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -12,6 +12,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import CloseIcon from "@mui/icons-material/Close";
 
 const style = {
   position: "absolute",
@@ -26,16 +27,21 @@ const style = {
 };
 
 export default function EditModal({
-  isModelOpen,
-  setisModelOpen,
+  isEventModal,
+  setisEventModal,
   date,
   events,
   setevents,
   currentEvent,
+  iseditEvent,
+  setiseditEvent,
+  seteventId,
 }) {
-  const handleOpen = () => setisModelOpen(true);
+  const handleOpen = () => setisEventModal(true);
   const handleClose = () => {
-    setisModelOpen(false);
+    setisEventModal(false);
+    setiseditEvent(false);
+    seteventId("");
   };
   //   var today = new Date();
   //   var currenttime =
@@ -100,28 +106,39 @@ export default function EditModal({
     handleClose();
   };
 
-  const deleteEvent=()=>{
+  const deleteEvent = () => {
     const eveid = currentEvent.id;
     axios.delete(`http://localhost:8080/events/${eveid}`);
-    var updatedEvents = events.map((event_i) => {
-      if (event_i.id != eveid) return event_i;
-    });
-    setevents(updatedEvents);
+    // var updatedEvents = events.map((event_i) => {
+    //   if (event_i.id != eveid) return event_i;
+    // });
+    var updatedEvents = events.filter((event) => event.id != eveid);
+    setevents([...updatedEvents]);
     handleClose();
-  }
+  };
   return (
     <div>
       <Modal
-        open={isModelOpen}
+        open={isEventModal}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         {/* {iseditEvent == false ? ( */}
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Edit event
-          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "row" }}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Edit event
+            </Typography>
+
+            <Box
+              sx={{ marginLeft: "auto", cursor: "pointer" }}
+              onClick={handleClose}
+            >
+              <CloseIcon />
+            </Box>
+          </Box>
+
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <Typography>
               Event{" "}
@@ -174,19 +191,20 @@ export default function EditModal({
             >
               Edit event
             </Button>
-            <Button variant="outlined" 
-            variant="outlined"
-            onClick={deleteEvent}
-            sx={{
-                ml:"14px",
-              width: "180px",
-              color: "#f20a7e",
-              "&:hover": {
-                backgroundColor: "#f20a7e",
-                color: "white",
-              },
-            }}
-            startIcon={<DeleteIcon />}>
+            <Button
+              variant="outlined"
+              onClick={deleteEvent}
+              sx={{
+                ml: "14px",
+                width: "180px",
+                color: "#f20a7e",
+                "&:hover": {
+                  backgroundColor: "#f20a7e",
+                  color: "white",
+                },
+              }}
+              startIcon={<DeleteIcon />}
+            >
               Delete
             </Button>
           </Typography>

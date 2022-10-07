@@ -25,7 +25,8 @@ import EditModal from "./components/EditModel";
 const Calender = () => {
   const [events, setevents] = useState([]);
   const [iseditEvent, setiseditEvent] = useState(false);
-  const[currentEvent,setcurrentEvent]=useState({});
+  const [currentEvent, setcurrentEvent] = useState({});
+  const [isEventModal, setisEventModal] = useState(false);
   const [eventId, seteventId] = useState();
   useEffect(() => {
     axios
@@ -47,37 +48,41 @@ const Calender = () => {
 
   const eventClick = (e) => {
     console.log("event is  , ", e.event.id);
-    setisModelOpen(true);
+    setisEventModal(true);
     seteventId(e.event.id);
     setiseditEvent(true);
-    if(eventId!=null){
-      axios
-      .get(`http://localhost:8080/events/${eventId}`)
+
+    axios
+      .get(`http://localhost:8080/events/${e.event.id}`)
       .then((res) => {
-        setcurrentEvent({...res.data});
-        console.log(currentEvent)
+        setcurrentEvent({ ...res.data });
+        console.log("Current event is : ", res.data);
       })
       .catch((err) => console.log(err));
-    }
   };
 
   return (
     <div className="App">
-      {!iseditEvent&&<TransitionsModal
-        isModelOpen={isModelOpen}
-        setisModelOpen={setisModelOpen}
-        date={date}
-        events={events}
-        setevents={setevents}
-        iseditEvent={iseditEvent}
-        setiseditEvent={setiseditEvent}
-        eventId={eventId}
-      />}
-       <EditModal
-        isModelOpen={iseditEvent}
-        setisModelOpen={setiseditEvent}
+      {!iseditEvent && (
+        <TransitionsModal
+          isModelOpen={isModelOpen}
+          setisModelOpen={setisModelOpen}
+          date={date}
+          events={events}
+          setevents={setevents}
+          iseditEvent={iseditEvent}
+          setiseditEvent={setiseditEvent}
+          eventId={eventId}
+        />
+      )}
+      <EditModal
+        isEventModal={isEventModal}
+        setisEventModal={setisEventModal}
         setisAddOpen={setisModelOpen}
         events={events}
+        seteventId={seteventId}
+        iseditEvent={iseditEvent}
+        setiseditEvent={setiseditEvent}
         setevents={setevents}
         date={date}
         currentEvent={currentEvent}
