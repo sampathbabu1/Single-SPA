@@ -18,6 +18,7 @@ const Container = () => {
   observable.subscribe((value) => setNotification(value), { latest: true });
 
   const [location, setLocation] = useState(window.location.pathname);
+  console.log(location);
 
   return (
     <Box
